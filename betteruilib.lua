@@ -486,20 +486,22 @@ function a:Window(w)
         local DropdownButton = Instance.new("TextButton")
         local DropdownList = Instance.new("Frame")
         local UIListLayout = Instance.new("UIListLayout")
+        local isOpen = false
+        local DropdownHeight = 36 -- Height of the dropdown button
 
         DropdownObj.Name = "DropdownObj"
         DropdownObj.Parent = E
         DropdownObj.BackgroundColor3 = Color3.fromRGB(43, 43, 43)
         DropdownObj.BorderSizePixel = 0
         DropdownObj.Position = UDim2.new(0, 0, 0.0172413792, 0)
-        DropdownObj.Size = UDim2.new(0, 203, 0, 36)
+        DropdownObj.Size = UDim2.new(0, 203, 0, DropdownHeight)
 
         DropdownButton.Name = "DropdownButton"
         DropdownButton.Parent = DropdownObj
         DropdownButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         DropdownButton.BackgroundTransparency = 1.000
         DropdownButton.BorderSizePixel = 0
-        DropdownButton.Size = UDim2.new(0, 203, 0, 36)
+        DropdownButton.Size = UDim2.new(0, 203, 0, DropdownHeight)
         DropdownButton.Font = Enum.Font.Gotham
         DropdownButton.Text = "  " .. tostring(Text) or ""
         DropdownButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -507,16 +509,17 @@ function a:Window(w)
         DropdownButton.TextXAlignment = Enum.TextXAlignment.Left
 
         DropdownList.Name = "DropdownList"
-        DropdownList.Parent = E
+        DropdownList.Parent = DropdownObj
         DropdownList.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
         DropdownList.BorderSizePixel = 0
-        DropdownList.Position = UDim2.new(1, 0, 0, 0)
+        DropdownList.Position = UDim2.new(0, 0, 1, 0)
         DropdownList.Size = UDim2.new(0, 203, 0, 0)
         DropdownList.ClipsDescendants = true
         DropdownList.Visible = false
 
         UIListLayout.Parent = DropdownList
         UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        UIListLayout.Padding = UDim.new(0, 4)
 
         local function UpdateDropdown()
             local ListSize = 0
@@ -525,11 +528,21 @@ function a:Window(w)
                     ListSize = ListSize + v.Size.Y.Offset + 4
                 end
             end
-            DropdownList.Size = UDim2.new(0, 203, 0, ListSize)
+            b.TweenService:Create(
+                DropdownList,
+                TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
+                {Size = UDim2.new(0, 203, 0, isOpen and ListSize or 0)}
+            ):Play()
+            b.TweenService:Create(
+                E,
+                TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
+                {Size = UDim2.new(0, 212, 0, isOpen and (E.Size.Y.Offset + ListSize) or (E.Size.Y.Offset - ListSize))}
+            ):Play()
         end
 
         DropdownButton.MouseButton1Click:Connect(function()
-            DropdownList.Visible = not DropdownList.Visible
+            isOpen = not isOpen
+            DropdownList.Visible = isOpen
             UpdateDropdown()
         end)
 
@@ -548,7 +561,9 @@ function a:Window(w)
 
             OptionButton.MouseButton1Click:Connect(function()
                 DropdownButton.Text = "  " .. tostring(Text) .. ": " .. tostring(Option)
+                isOpen = false
                 DropdownList.Visible = false
+                UpdateDropdown()
                 Callback(Option)
             end)
         end
@@ -588,7 +603,7 @@ function a:Window(w)
         TextboxInput.Text = ""
         TextboxInput.TextColor3 = Color3.fromRGB(255, 255, 255)
         TextboxInput.TextSize = 14.000
-        TextboxInput.ClipsDescendants = true
+        TextboxInput.ClearTextOnFocus = false
         TextboxInput.TextWrapped = true
 
         TextboxInput.FocusLost:Connect(function(enterPressed)
