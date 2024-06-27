@@ -486,7 +486,6 @@ function a:Window(w)
         local DropdownButton = Instance.new("TextButton")
         local DropdownList = Instance.new("Frame")
         local UIListLayout = Instance.new("UIListLayout")
-        local isOpen = false
 
         DropdownObj.Name = "DropdownObj"
         DropdownObj.Parent = E
@@ -508,17 +507,16 @@ function a:Window(w)
         DropdownButton.TextXAlignment = Enum.TextXAlignment.Left
 
         DropdownList.Name = "DropdownList"
-        DropdownList.Parent = DropdownObj
+        DropdownList.Parent = E
         DropdownList.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
         DropdownList.BorderSizePixel = 0
-        DropdownList.Position = UDim2.new(0, 0, 1, 0)
+        DropdownList.Position = UDim2.new(1, 0, 0, 0)
         DropdownList.Size = UDim2.new(0, 203, 0, 0)
         DropdownList.ClipsDescendants = true
         DropdownList.Visible = false
 
         UIListLayout.Parent = DropdownList
         UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-        UIListLayout.Padding = UDim.new(0, 4)
 
         local function UpdateDropdown()
             local ListSize = 0
@@ -527,22 +525,12 @@ function a:Window(w)
                     ListSize = ListSize + v.Size.Y.Offset + 4
                 end
             end
-            b.TweenService:Create(
-                DropdownList,
-                TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-                {Size = UDim2.new(0, 203, 0, isOpen and ListSize or 0)}
-            ):Play()
+            DropdownList.Size = UDim2.new(0, 203, 0, ListSize)
         end
 
         DropdownButton.MouseButton1Click:Connect(function()
-            isOpen = not isOpen
-            DropdownList.Visible = isOpen
+            DropdownList.Visible = not DropdownList.Visible
             UpdateDropdown()
-            if isOpen then
-                E.Size = UDim2.new(E.Size.X.Scale, E.Size.X.Offset, 0, E.Size.Y.Offset + DropdownList.Size.Y.Offset)
-            else
-                E.Size = UDim2.new(E.Size.X.Scale, E.Size.X.Offset, 0, E.Size.Y.Offset - DropdownList.Size.Y.Offset)
-            end
         end)
 
         for _, Option in ipairs(Options) do
@@ -560,9 +548,7 @@ function a:Window(w)
 
             OptionButton.MouseButton1Click:Connect(function()
                 DropdownButton.Text = "  " .. tostring(Text) .. ": " .. tostring(Option)
-                isOpen = false
                 DropdownList.Visible = false
-                E.Size = UDim2.new(E.Size.X.Scale, E.Size.X.Offset, 0, E.Size.Y.Offset - DropdownList.Size.Y.Offset)
                 Callback(Option)
             end)
         end
@@ -602,7 +588,7 @@ function a:Window(w)
         TextboxInput.Text = ""
         TextboxInput.TextColor3 = Color3.fromRGB(255, 255, 255)
         TextboxInput.TextSize = 14.000
-        TextboxInput.ClearTextOnFocus = false
+        TextboxInput.ClipsDescendants = true
         TextboxInput.TextWrapped = true
 
         TextboxInput.FocusLost:Connect(function(enterPressed)
