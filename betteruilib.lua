@@ -507,12 +507,13 @@ function a:Window(w)
         DropdownButton.TextXAlignment = Enum.TextXAlignment.Left
 
         DropdownList.Name = "DropdownList"
-        DropdownList.Parent = DropdownObj
+        DropdownList.Parent = E
         DropdownList.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
         DropdownList.BorderSizePixel = 0
-        DropdownList.Position = UDim2.new(0, 0, 1, 0)
+        DropdownList.Position = UDim2.new(1, 0, 0, 0)
         DropdownList.Size = UDim2.new(0, 203, 0, 0)
         DropdownList.ClipsDescendants = true
+        DropdownList.Visible = false
 
         UIListLayout.Parent = DropdownList
         UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -587,6 +588,8 @@ function a:Window(w)
         TextboxInput.Text = ""
         TextboxInput.TextColor3 = Color3.fromRGB(255, 255, 255)
         TextboxInput.TextSize = 14.000
+        TextboxInput.ClipsDescendants = true
+        TextboxInput.TextWrapped = true
 
         TextboxInput.FocusLost:Connect(function(enterPressed)
             if enterPressed then
