@@ -486,6 +486,7 @@ function a:Window(w)
         local DropdownButton = Instance.new("TextButton")
         local DropdownList = Instance.new("Frame")
         local UIListLayout = Instance.new("UIListLayout")
+        local Arrow = Instance.new("ImageLabel")
 
         DropdownObj.Name = "DropdownObj"
         DropdownObj.Parent = E
@@ -506,13 +507,31 @@ function a:Window(w)
         DropdownButton.TextSize = 14.000
         DropdownButton.TextXAlignment = Enum.TextXAlignment.Left
 
+        Arrow.Name = "Arrow"
+        Arrow.Parent = DropdownButton
+        Arrow.AnchorPoint = Vector2.new(1, 0.5)
+        Arrow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        Arrow.BackgroundTransparency = 1.000
+        Arrow.BorderSizePixel = 0
+        Arrow.Position = UDim2.new(1, -5, 0.5, 0)
+        Arrow.Size = UDim2.new(0, 18, 0, 18)
+        Arrow.Image = "rbxassetid://3926305904"
+        Arrow.ImageRectOffset = Vector2.new(324, 924)
+        Arrow.ImageRectSize = Vector2.new(36, 36)
+        Arrow.Rotation = 0
+
         DropdownList.Name = "DropdownList"
         DropdownList.Parent = DropdownObj
         DropdownList.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
         DropdownList.BorderSizePixel = 0
-        DropdownList.Position = UDim2.new(0, 0, 1, 0)
+        DropdownList.Position = UDim2.new(1, 5, 0, 0)
         DropdownList.Size = UDim2.new(0, 203, 0, 0)
         DropdownList.ClipsDescendants = true
+        DropdownList.Visible = false
+
+        local UICorner = Instance.new("UICorner")
+        UICorner.CornerRadius = UDim.new(0, 6)
+        UICorner.Parent = DropdownList
 
         UIListLayout.Parent = DropdownList
         UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -529,6 +548,7 @@ function a:Window(w)
 
         DropdownButton.MouseButton1Click:Connect(function()
             DropdownList.Visible = not DropdownList.Visible
+            Arrow.Rotation = DropdownList.Visible and 90 or 0
             UpdateDropdown()
         end)
 
@@ -548,6 +568,7 @@ function a:Window(w)
             OptionButton.MouseButton1Click:Connect(function()
                 DropdownButton.Text = "  " .. tostring(Text) .. ": " .. tostring(Option)
                 DropdownList.Visible = false
+                Arrow.Rotation = 0
                 Callback(Option)
             end)
         end
@@ -587,6 +608,8 @@ function a:Window(w)
         TextboxInput.Text = ""
         TextboxInput.TextColor3 = Color3.fromRGB(255, 255, 255)
         TextboxInput.TextSize = 14.000
+        TextboxInput.ClipsDescendants = true
+        TextboxInput.TextWrapped = true
 
         TextboxInput.FocusLost:Connect(function(enterPressed)
             if enterPressed then
