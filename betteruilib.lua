@@ -521,7 +521,7 @@ function a:Window(w)
         Arrow.Rotation = 0
 
         DropdownList.Name = "DropdownList"
-        DropdownList.Parent = E
+        DropdownList.Parent = DropdownObj
         DropdownList.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
         DropdownList.BorderSizePixel = 0
         DropdownList.Position = UDim2.new(1, 5, 0, 0)
