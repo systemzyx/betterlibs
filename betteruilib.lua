@@ -11,54 +11,46 @@ setmetatable(
 )
 local g
 local h = b.Players.LocalPlayer:GetMouse()
+local userInputService = game:GetService("UserInputService")
+
 function Drag(i, j)
-    if g then
-        g.ZIndex = -2
+    local dragging
+    local dragInput
+    local dragStart
+    local startPos
+
+    local function update(input)
+        local delta = input.Position - dragStart
+        i.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
     end
-    g = i
-    g.ZIndex = -1
-    if not j then
-        j = i
-    end
-    local k
-    local l
-    local m
-    local n
-    local function o(p)
-        local q = p.Position - m
-        i.Position = UDim2.new(n.X.Scale, n.X.Offset + q.X, n.Y.Scale, n.Y.Offset + q.Y)
-    end
-    j.InputBegan:Connect(
-        function(p)
-            if p.UserInputType == Enum.UserInputType.MouseButton1 then
-                k = true
-                m = p.Position
-                n = i.Position
-                p.Changed:Connect(
-                    function()
-                        if p.UserInputState == Enum.UserInputState.End then
-                            k = false
-                        end
-                    end
-                )
-            end
+
+    j.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = i.Position
+
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
         end
-    )
-    i.InputChanged:Connect(
-        function(p)
-            if p.UserInputType == Enum.UserInputType.MouseMovement then
-                l = p
-            end
+    end)
+
+    j.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
         end
-    )
-    game:service("UserInputService").InputChanged:Connect(
-        function(p)
-            if p == l and k then
-                o(p)
-            end
+    end)
+
+    userInputService.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            update(input)
         end
-    )
+    end)
 end
+
 function ClickEffect(r)
     spawn(
         function()
@@ -96,6 +88,7 @@ function ClickEffect(r)
         end
     )
 end
+
 local t = Instance.new("ScreenGui")
 t.Name = b.HttpService:GenerateGUID()
 t.Parent = b.RunService:IsStudio() and b.Players.LocalPlayer:WaitForChild("PlayerGui") or b.CoreGui
@@ -106,6 +99,7 @@ b.UserInputService.InputBegan:Connect(
         end
     end
 )
+
 function a:Window(w)
     local x = false
     a.windowCount = a.windowCount + 1
@@ -124,7 +118,7 @@ function a:Window(w)
     y.BorderSizePixel = 0
     y.Position = UDim2.new(0, 25, 0, -30 + 36 * a.windowCount + 6 * a.windowCount)
     y.Size = UDim2.new(0, 212, 0, 36)
-    Drag(y)
+    Drag(y, y)
     z.Name = "WindowLine"
     z.Parent = y
     z.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
