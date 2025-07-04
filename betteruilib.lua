@@ -1,3 +1,4 @@
+-- hi
 local a = {windowCount = 0, flags = {}}
 local b = {}
 setmetatable(
