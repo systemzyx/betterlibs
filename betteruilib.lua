@@ -260,7 +260,7 @@ local t = 0
 rs.RenderStepped:Connect(function(dt)
     t += dt * 0.2 -- slower transition (reduce this value more to slow it further)
     local function hsv(i) return Color3.fromHSV((t + i) % 1, 1, 1) end
-    O.Color = ColorSequence.new{
+    P.Color = ColorSequence.new{
         ColorSequenceKeypoint.new(0, hsv(0)),
         ColorSequenceKeypoint.new(1, hsv(0.2))
     }
