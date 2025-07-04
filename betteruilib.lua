@@ -125,14 +125,16 @@ function a:Window(w)
     z.BorderSizePixel = 0
     z.Position = UDim2.new(0, 0, 0, 34)
     z.Size = UDim2.new(0, 212, 0, 2)
-    A.Color =
-        ColorSequence.new {
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(43, 43, 43)),
-        ColorSequenceKeypoint.new(0.20, Color3.fromRGB(43, 43, 43)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(131, 132, 255)),
-        ColorSequenceKeypoint.new(0.80, Color3.fromRGB(43, 43, 43)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(43, 43, 43))
+ local rs = game:GetService("RunService")
+local t = 0
+rs.RenderStepped:Connect(function(dt)
+    t += dt * 0.3 -- slower transition (reduce this value more to slow it further)
+    local function hsv(i) return Color3.fromHSV((t + i) % 1, 1, 1) end
+    A.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, hsv(0)),
+        ColorSequenceKeypoint.new(1, hsv(0.2))
     }
+end)
     A.Name = "WindowLineGradient"
     A.Parent = z
     B.Name = "Header"
